@@ -5,15 +5,14 @@ import 'react-dates/initialize'; // Required as per v13 - see https://github.com
 import { SingleDatePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
-import { addExpense } from "../actions/expenses";
-
-class ExpenseForm extends React.Component {
+export default class ExpenseForm extends React.Component {
     state = {
         description: '',
         amount: '',
         createdAt: moment(),
         calendarFocused: false,
-        note: ''
+        note: '',
+        error: ''
     }
     onDescriptionChange = (e) => {
         const description = e.target.value;
@@ -37,16 +36,30 @@ class ExpenseForm extends React.Component {
     onFocusChange = ({ focused }) => {
         this.setState(() => ({ calendarFocused: focused }));
     };
-    onFormSubmit = (e) => {
+    onSubmit = (e) => {
         e.preventDefault();
 
-        this.props.dispatch(addExpense(this.state));
+        if (!this.state.description || !this.state.amount) {
+            this.setState(() => ({
+                error: 'Please provide description and amount'
+            }));
+        } else {
+            this.setState(() => ({ error: '' }));
+            // We call the function passed from above (AddExpense or EditExpense)
+            this.props.onSubmit({
+                description: this.state.description,
+                amount: parseFloat(this.state.amount, 10) * 100,
+                createdAt: this.state.createdAt.valueOf(), // to convert to timestamp,
+                note: this.state.note
+            });
+        }
     };
     render() {
         return (
             <div>
+                {this.state.error && <p>{this.state.error}</p>}
                 <form
-                    onSubmit={this.onFormSubmit}
+                    onSubmit={this.onSubmit}
                 >
                     <input
                         type="text"
@@ -80,5 +93,3 @@ class ExpenseForm extends React.Component {
         );
     }
 }
-
-export default connect()(ExpenseForm);

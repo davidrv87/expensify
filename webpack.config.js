@@ -20,7 +20,7 @@ module.exports = {
             test: /\.s?css$/
         }]
     },
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'cheap-module-source-map',
     devServer: {
         contentBase: path.join(__dirname, 'public'),
         historyApiFallback: true // Used to use client routing
