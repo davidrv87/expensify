@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import 'react-dates/initialize'; // Required as per v13 - see https://github.com/airbnb/react-dates/issues/797
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
