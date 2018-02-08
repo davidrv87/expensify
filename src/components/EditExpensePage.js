@@ -4,33 +4,40 @@ import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
 import { editExpense, removeExpense } from '../actions/expenses';
 
-const EditExpensePage = props => (
-    <div>
-        <h1>Edit Expense</h1>
-        <ExpenseForm
-            expense={props.expense}
-            onSubmit={(updates) => {
-                // props.match.params.id: get the id from the URI
-                props.dispatch(editExpense(props.match.params.id, updates));
-                props.history.push('/');
-            }}
-        />
-        <button
-            onClick={() => {
-                // You could've used props.match.params.id as well
-                props.dispatch(removeExpense(props.expense));
-                props.history.push('/');
-            }}
-        >
-            Remove
-        </button>
-    </div>
-);
-
-const mapStateToProps = (state, props) => {
-    return {
-        expense: state.expenses.find(expense => expense.id === props.match.params.id)
+export class EditExpensePage extends React.Component {
+    onSubmit = updates => {
+        this.props.editExpense(this.props.expense.id, updates);
+        this.props.history.push('/');
     };
-};
+    onRemove = () => {
+        this.props.removeExpense(this.props.expense);
+        this.props.history.push('/');
+    };
+    render() {
+        return (
+            <div>
+                <h1>Edit Expense</h1>
+                <ExpenseForm
+                    expense={this.props.expense}
+                    onSubmit={this.onSubmit}
+                />
+                <button
+                    onClick={this.onRemove}
+                >
+                    Remove
+                </button>
+            </div>
+        );
+    }
+}
 
-export default connect(mapStateToProps)(EditExpensePage);
+const mapStateToProps = (state, props) => ({
+    expense: state.expenses.find(expense => expense.id === props.match.params.id)
+});
+
+const mapDispatchToProps = dispatch => ({
+    editExpense: (id, updates) => dispatch(editExpense(id, updates)),
+    removeExpense: expense => dispatch(removeExpense(expense))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditExpensePage);
