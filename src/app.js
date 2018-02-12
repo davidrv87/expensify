@@ -5,6 +5,7 @@ import 'react-dates/initialize'; // Required as per v13 - see https://github.com
 import 'react-dates/lib/css/_datepicker.css';
 import 'normalize.css/normalize.css';
 
+import { startSetExpenses } from './actions/expenses';
 import AppRouter from './routers/AppRouter';
 import configureStore from './store/configureStore';
 
@@ -19,4 +20,8 @@ const jsx = (
     </Provider>
 );
 
-ReactDOM.render(jsx, document.getElementById('app'));
+ReactDOM.render(<p>Loading...</p>, document.getElementById('app'));
+
+store.dispatch(startSetExpenses()).then(() => {
+    ReactDOM.render(jsx, document.getElementById('app'));
+});
