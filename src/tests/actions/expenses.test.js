@@ -6,6 +6,7 @@ import {
     addExpense,
     startRemoveExpense,
     removeExpense,
+    startEditExpense,
     editExpense,
     setExpenses,
     startSetExpenses
@@ -31,7 +32,7 @@ test('should setup remove expense action object', () => {
     });
 });
 
-test.only('should remove an expense from database and store', (done) => {
+test('should remove an expense from database and store', (done) => {
     const store = createMockStore({});
     const id = expenses[0].id;
     store.dispatch(startRemoveExpense(expenses[0])).then(() => {
@@ -56,6 +57,31 @@ test('should setup edit expense action object', () => {
         updates: {
             description: 'New description'
         }
+    });
+});
+
+test('should edit expense with provided updates in database and store', (done) => {
+    const store = createMockStore({});
+    const id = expenses[2].id;
+    const updates = {
+        description: 'The new description from the test suite',
+        amount: 900
+    };
+    store.dispatch(startEditExpense(id, updates)).then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: 'EDIT_EXPENSE',
+            id,
+            updates
+        });
+
+        return database.ref(`expenses/${id}`).once('value');
+    }).then((snapshot) => {
+        expect(snapshot.val().description).toBe(updates.description);
+        expect(snapshot.val().amount).toBe(updates.amount);
+        expect(snapshot.val().createdAt).toBe(expenses[2].createdAt);
+        expect(snapshot.val().note).toBe(expenses[2].note);
+        done();
     });
 });
 
