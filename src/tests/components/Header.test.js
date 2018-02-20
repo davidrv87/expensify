@@ -1,12 +1,25 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Header from '../../components/Header';
+import { Header } from '../../components/Header';
+
+let startLogoutSpy, wrapper;
+
+beforeEach(() => {
+    startLogoutSpy = jest.fn();
+    wrapper = shallow(
+        <Header
+            startLogout={startLogoutSpy}
+        />
+    );
+});
 
 test('should render Header correctly', () => {
-    const wrapper = shallow(<Header />);
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('h1').length).toBe(1);
-    expect(wrapper.find('h1').text()).toBe('Expensify');
+});
+
+test('should handle startLogout', () => {
+    wrapper.find('button').simulate('click');
+    expect(startLogoutSpy).toHaveBeenCalled();
 });
 
