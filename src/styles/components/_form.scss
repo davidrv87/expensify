@@ -8,6 +8,7 @@
 }
 
 .form__error {
+    color: $error-red;
     font-style: italic;
     margin: 0 0 $m-size 0;
 }
